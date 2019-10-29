@@ -17,16 +17,32 @@ import io.netty.handler.codec.redis.RedisEncoder;
 import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * @author chenlf
  * @date 2019/10/24
  */
 public class BdisServer {
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(BdisServer.class);
+
     private Integer port = StartConfig.BDIS_PORT;
     private static BdisServer nettyServer = new BdisServer();
+
     public static void main(String[] args) throws InterruptedException {
         nettyServer.run();
+    }
+    private void loadConfig(){
+        try {
+            Properties properties = new Properties();
+            InputStream in = BdisServer.class.getClassLoader().getResourceAsStream("config/bdis.properties");
+            properties.load(in);
+
+
+        }catch (Exception e){
+
+        }
     }
     public  void run() throws InterruptedException {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
