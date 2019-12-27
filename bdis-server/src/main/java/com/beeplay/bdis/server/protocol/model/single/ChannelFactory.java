@@ -6,10 +6,10 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.slf4j.LoggerFactory;
 
 public class ChannelFactory implements PooledObjectFactory<Connection> {
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(ChannelFactory.class);
     private String host;
     private int port;
 
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(ChannelFactory.class);
     ChannelFactory(String host,int port){
         this.host=host;
         this.port=port;

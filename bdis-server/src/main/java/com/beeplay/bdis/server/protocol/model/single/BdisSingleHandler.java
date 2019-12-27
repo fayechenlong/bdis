@@ -1,14 +1,14 @@
-package com.beeplay.bdis.server.start;
+package com.beeplay.bdis.server.protocol.model.single;
 
 import com.beeplay.bdis.server.command.BdisCommand;
 import com.beeplay.bdis.server.config.StartConfig;
 import com.beeplay.bdis.server.protocol.model.BdisClientPool;
-import com.beeplay.bdis.server.protocol.model.single.Connection;
+import com.beeplay.bdis.server.start.BdisServer;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.handler.codec.CodecException;
 import io.netty.handler.codec.redis.*;
 import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
@@ -20,16 +20,42 @@ import java.util.Map;
  * @author chenlf
  * @date 2019/10/24
  */
-public class BdisHandler extends ChannelDuplexHandler {
-    private static Logger logger = LoggerFactory.getLogger(BdisHandler.class);
+public class BdisSingleHandler extends ChannelDuplexHandler {
+    private static Logger logger = LoggerFactory.getLogger(BdisSingleHandler.class);
     private Map<Object,Object> stringMap = new HashMap<>();
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        Connection connection=BdisServer.channelPool.getResource();
+        printAggregatedRedisResponseSys((RedisMessage)msg);
+        Connection connection= BdisServer.channelPool.getResource();
         connection.setChxId(ctx.channel().id().toString());
         connection.write(msg);
         BdisServer.channelPool.returnResource(connection);
         //返回值
+    }
+    private static void printAggregatedRedisResponseSys(RedisMessage msg) {
+        if (msg instanceof SimpleStringRedisMessage) {
+            logger.info("command : "+((SimpleStringRedisMessage) msg).content());
+        } else if (msg instanceof ErrorRedisMessage) {
+            logger.info("command : "+((ErrorRedisMessage) msg).content());
+        } else if (msg instanceof IntegerRedisMessage) {
+            logger.info("command : "+((IntegerRedisMessage) msg).toString());
+        } else if (msg instanceof FullBulkStringRedisMessage) {
+            logger.info("command : "+getString((FullBulkStringRedisMessage) msg));
+        } else if (msg instanceof ArrayRedisMessage) {
+            String returnString="";
+            for (RedisMessage child : ((ArrayRedisMessage) msg).children()) {
+                returnString=returnString+RedisClientHandler.printAggregatedRedisResponse(child)+" ";
+            }
+            logger.info("command : "+returnString);
+        } else {
+            throw new CodecException("unknown message type: " + msg);
+        }
+    }
+    private static String getString(FullBulkStringRedisMessage msg) {
+        if (msg.isNull()) {
+            return "(null)";
+        }
+        return msg.content().toString(CharsetUtil.UTF_8);
     }
     private Object printAggregatedRedisResponseRequest(ChannelHandlerContext ctx,ArrayRedisMessage message) {
         String type = ((FullBulkStringRedisMessage) message.children().get(0)).content().toString(CharsetUtil.UTF_8);

@@ -1,6 +1,7 @@
 package com.beeplay.bdis.server.start;
 
 import com.beeplay.bdis.server.config.StartConfig;
+import com.beeplay.bdis.server.protocol.model.single.BdisSingleHandler;
 import com.beeplay.bdis.server.protocol.model.single.ChannelPool;
 import com.beeplay.bdis.server.protocol.model.single.Protocol;
 import com.beeplay.bdis.server.util.LogExceptionStackTrace;
@@ -68,7 +69,7 @@ public class BdisServer {
                     p.addLast(new RedisBulkStringAggregator());
                     p.addLast(new RedisArrayAggregator());
                     p.addLast(new RedisEncoder());
-                    p.addLast(new BdisHandler());
+                    p.addLast(new BdisSingleHandler());
                 }
             });
             serverBootstrap.channel(NioServerSocketChannel.class);

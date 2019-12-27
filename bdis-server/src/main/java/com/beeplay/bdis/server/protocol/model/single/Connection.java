@@ -61,7 +61,6 @@ public class Connection {
     public Object write(Object msg){
         ch.writeAndFlush(msg);
         redisClientHandler.setChxId(chxId);
-        logger.info("channel id="+ch.id());
         return "";
     }
 
