@@ -1,8 +1,11 @@
-package com.beeplay.bdis.server.protocol;
+package com.beeplay.bdis.server.start;
 
 import com.beeplay.bdis.server.command.BdisCommand;
 import com.beeplay.bdis.server.config.StartConfig;
+import com.beeplay.bdis.server.protocol.model.BdisClientPool;
+import com.beeplay.bdis.server.protocol.model.single.Connection;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -21,19 +24,12 @@ public class BdisHandler extends ChannelDuplexHandler {
     private static Logger logger = LoggerFactory.getLogger(BdisHandler.class);
     private Map<Object,Object> stringMap = new HashMap<>();
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg)
-            throws Exception {
-        ArrayRedisMessage message = (ArrayRedisMessage)msg;
-        String ml="command：";
-        for(RedisMessage m:message.children()){
-            ml=ml+((FullBulkStringRedisMessage) m).content().toString(CharsetUtil.UTF_8)+" ";
-        }
-        logger.info(ml);
-        Object response = printAggregatedRedisResponseRequest(ctx,message);
-        logger.info("return："+response);
-        if (response != null) {
-            ctx.writeAndFlush(response);
-        }
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        Connection connection=BdisServer.channelPool.getResource();
+        connection.setChxId(ctx.channel().id().toString());
+        connection.write(msg);
+        BdisServer.channelPool.returnResource(connection);
+        //返回值
     }
     private Object printAggregatedRedisResponseRequest(ChannelHandlerContext ctx,ArrayRedisMessage message) {
         String type = ((FullBulkStringRedisMessage) message.children().get(0)).content().toString(CharsetUtil.UTF_8);
@@ -68,7 +64,10 @@ public class BdisHandler extends ChannelDuplexHandler {
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("client connect;address:" + ctx.channel().remoteAddress());
+        String channelid=ctx.channel().id().toString();
+        logger.info("client connect;address:" + ctx.channel().remoteAddress()+" id:"+channelid);
         super.channelActive(ctx);
+        BdisClientPool.bdisClients.put(channelid,ctx);
+        BdisServer.channelHandlerContext=ctx;
     }
 }

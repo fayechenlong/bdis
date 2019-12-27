@@ -6,5 +6,6 @@ package com.beeplay.bdis.server.config;
  */
 public class StartConfig {
     public static String BDIS_INFO="bdis version 0.0.1";
-    public static int BDIS_PORT=6379;
+    public static String BDIS_MODEL="single";
+    public static int BDIS_PORT=6789;
 }

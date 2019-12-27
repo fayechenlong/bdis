@@ -20,8 +20,8 @@ import java.io.InputStreamReader;
  */
 public class RedisClient {
 
-    private static final String HOST = System.getProperty("host", "172.16.249.72");
-    private static final int PORT = Integer.parseInt(System.getProperty("port", "6379"));
+    private static final String HOST = System.getProperty("host", "127.0.0.1");
+    private static final int PORT = Integer.parseInt(System.getProperty("port", "6789"));
 
     public static void main(String[] args) throws Exception {
 

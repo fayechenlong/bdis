@@ -1,4 +1,4 @@
-package com.beeplay.bdis.server.utils;
+package com.beeplay.bdis.server.util;
 
 import java.util.ArrayList;
 import java.util.Collections;

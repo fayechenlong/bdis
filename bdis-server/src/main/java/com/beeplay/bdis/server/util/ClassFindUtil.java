@@ -1,10 +1,9 @@
-package com.beeplay.bdis.server.utils;
+package com.beeplay.bdis.server.util;
 
 import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
