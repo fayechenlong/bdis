@@ -13,7 +13,9 @@ public enum BdisCommand {
     PING("ping"),
     PONG("PONG"),
     OK("OK"),
-    NULL("(null)");
+    NULL("(null)"),
+    INCR("INCR"),
+    INCRBY("INCRBY");
     private final String cmd;
     BdisCommand(String cmd){
              this.cmd=cmd;
