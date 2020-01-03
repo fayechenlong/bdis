@@ -8,7 +8,10 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.redis.FullBulkStringRedisMessage;
 import io.netty.handler.codec.redis.SimpleStringRedisMessage;
+import io.netty.util.CharsetUtil;
 import redis.clients.jedis.ScanResult;
+
+import java.util.List;
 
 public abstract class ClusterAbstract extends ChannelDuplexHandler {
 
@@ -42,5 +45,9 @@ public abstract class ClusterAbstract extends ChannelDuplexHandler {
     }
     public void unknownCommand(ChannelHandlerContext ctx,String command){
         ctx.writeAndFlush(new SimpleStringRedisMessage("ERR unknown command '" + command + "'"));
+    }
+
+    public String getMessage(List<FullBulkStringRedisMessage> messages,int count){
+        return messages.get(count).content().toString(CharsetUtil.UTF_8);
     }
 }

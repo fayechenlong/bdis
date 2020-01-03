@@ -8,6 +8,8 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.redis.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,8 +24,12 @@ public class BdisClusterHandler extends ClusterHandler {
         RedisMessageUtil.printAggregatedRedisResponseCommand(((RedisMessage)msg));//日志打印
 
         List<RedisMessage> messages=((ArrayRedisMessage)msg).children();
+        List<FullBulkStringRedisMessage> fullBulkStringRedisMessages=new ArrayList<>();
+        for(RedisMessage redisMessage:messages){
+            fullBulkStringRedisMessages.add((FullBulkStringRedisMessage)redisMessage);
+        }
         try {
-            super.sendCommand(ctx,messages);
+            super.sendCommand(ctx,fullBulkStringRedisMessages);
         }catch (Exception e){
             logger.error(LogExceptionStackTrace.erroStackTrace(e).toString());
             ctx.writeAndFlush(new SimpleStringRedisMessage(e.getMessage()));
