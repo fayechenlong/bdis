@@ -1,12 +1,10 @@
 package com.beeplay.bdis.server.protocol.model.single;
 
-import com.beeplay.bdis.server.protocol.model.BdisClientPool;
-import com.beeplay.bdis.server.util.GfJsonUtil;
+import com.beeplay.bdis.server.protocol.BdisClientPool;
 import com.beeplay.bdis.server.util.RedisMessageUtil;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import io.netty.handler.codec.CodecException;
 import io.netty.handler.codec.redis.*;
 import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;

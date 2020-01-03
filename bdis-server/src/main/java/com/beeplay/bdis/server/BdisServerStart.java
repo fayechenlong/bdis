@@ -1,4 +1,4 @@
-package com.beeplay.bdis.server.start;
+package com.beeplay.bdis.server;
 
 
 import com.beeplay.bdis.server.util.LogExceptionStackTrace;
@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
  * @author chenlf
  * @date 2019/10/24
  */
-public class BdisServer extends BdisServerAbstract {
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(BdisServer.class);
+public class BdisServerStart extends BdisServerAbstract {
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(BdisServerStart.class);
     public static void main(String[] args){
         loadConfig();
         try {
@@ -18,6 +18,4 @@ public class BdisServer extends BdisServerAbstract {
             logger.error("Bdis start failed!", LogExceptionStackTrace.erroStackTrace(e));
         }
     }
-
-
 }

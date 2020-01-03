@@ -1,4 +1,4 @@
-package com.beeplay.bdis.server.protocol.model;
+package com.beeplay.bdis.server.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import java.util.concurrent.ConcurrentHashMap;

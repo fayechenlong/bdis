@@ -2,7 +2,7 @@ package com.beeplay.bdis.server.protocol.model.cluster;
 
 import com.beeplay.bdis.server.command.BdisCommand;
 import com.beeplay.bdis.server.config.StartConfig;
-import com.beeplay.bdis.server.start.BdisServer;
+import com.beeplay.bdis.server.BdisServerStart;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.redis.FullBulkStringRedisMessage;
 import io.netty.handler.codec.redis.RedisMessage;
@@ -49,7 +49,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void get(ChannelHandlerContext ctx,List<RedisMessage> messages){
         if(messages.size()>1) {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
-            super.returnData(BdisServer.jedisCluster.get(key), ctx);
+            super.returnData(BdisServerStart.jedisCluster.get(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -57,7 +57,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void type(ChannelHandlerContext ctx,List<RedisMessage> messages){
         if(messages.size()>1) {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
-            super.returnData(BdisServer.jedisCluster.type(key), ctx);
+            super.returnData(BdisServerStart.jedisCluster.type(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -65,7 +65,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void ttl(ChannelHandlerContext ctx,List<RedisMessage> messages){
         if(messages.size()>1) {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
-            super.returnData(BdisServer.jedisCluster.ttl(key), ctx);
+            super.returnData(BdisServerStart.jedisCluster.ttl(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -73,7 +73,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void del(ChannelHandlerContext ctx,List<RedisMessage> messages){
         if(messages.size()>1) {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
-            super.returnData(BdisServer.jedisCluster.del(key), ctx);
+            super.returnData(BdisServerStart.jedisCluster.del(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -81,7 +81,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void scard(ChannelHandlerContext ctx,List<RedisMessage> messages){
         if(messages.size()>1) {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
-            super.returnData(BdisServer.jedisCluster.scard(key), ctx);
+            super.returnData(BdisServerStart.jedisCluster.scard(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -89,7 +89,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void incr(ChannelHandlerContext ctx,List<RedisMessage> messages){
         if(messages.size()>1) {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
-            super.returnData(BdisServer.jedisCluster.incr(key), ctx);
+            super.returnData(BdisServerStart.jedisCluster.incr(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -98,7 +98,7 @@ public  class ClusterHandler extends ClusterAbstract {
         if(messages.size()>1) {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
             Long outLong = 0L;
-            if (BdisServer.jedisCluster.exists(key)) {
+            if (BdisServerStart.jedisCluster.exists(key)) {
                 outLong = 1L;
             }
             super.returnData(outLong, ctx);
@@ -110,7 +110,7 @@ public  class ClusterHandler extends ClusterAbstract {
         if(messages.size()==3) {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
             String value = ((FullBulkStringRedisMessage) messages.get(2)).content().toString(CharsetUtil.UTF_8);
-            super.returnData(BdisServer.jedisCluster.set(key, value), ctx);
+            super.returnData(BdisServerStart.jedisCluster.set(key, value), ctx);
             return;
         }else if(messages.size()==5){
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
@@ -118,7 +118,7 @@ public  class ClusterHandler extends ClusterAbstract {
             String command = ((FullBulkStringRedisMessage) messages.get(3)).content().toString(CharsetUtil.UTF_8);
             if(command.toLowerCase().equals("ex")){
             Integer seconds = Integer.parseInt(((FullBulkStringRedisMessage) messages.get(4)).content().toString(CharsetUtil.UTF_8));
-            super.returnData(BdisServer.jedisCluster.setex(key,seconds,value), ctx);
+            super.returnData(BdisServerStart.jedisCluster.setex(key,seconds,value), ctx);
             }
             return;
         }
@@ -129,7 +129,7 @@ public  class ClusterHandler extends ClusterAbstract {
             String key = ((FullBulkStringRedisMessage) messages.get(1)).content().toString(CharsetUtil.UTF_8);
             Integer seconds = Integer.parseInt(((FullBulkStringRedisMessage) messages.get(2)).content().toString(CharsetUtil.UTF_8));
             String value = ((FullBulkStringRedisMessage) messages.get(3)).content().toString(CharsetUtil.UTF_8);
-            super.returnData(BdisServer.jedisCluster.setex(key,seconds,value), ctx);
+            super.returnData(BdisServerStart.jedisCluster.setex(key,seconds,value), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -152,7 +152,7 @@ public  class ClusterHandler extends ClusterAbstract {
                     sp.count(countValue);
                 }
             }
-            super.returnData(BdisServer.jedisCluster.scan(sursor,sp), ctx);
+            super.returnData(BdisServerStart.jedisCluster.scan(sursor,sp), ctx);
             return;
         }
         super.unknownCommand(ctx);

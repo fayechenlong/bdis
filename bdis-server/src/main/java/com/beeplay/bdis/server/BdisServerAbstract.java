@@ -1,4 +1,4 @@
-package com.beeplay.bdis.server.start;
+package com.beeplay.bdis.server;
 
 
 import com.beeplay.bdis.server.config.StartConfig;
@@ -37,7 +37,7 @@ public class BdisServerAbstract {
     public static void loadConfig() {
         try {
             Properties properties = new Properties();
-            InputStream in = BdisServer.class.getClassLoader().getResourceAsStream("bdis.properties");
+            InputStream in = BdisServerStart.class.getClassLoader().getResourceAsStream("bdis.properties");
             properties.load(in);
             logger.info("config load success!");
             StartConfig.BDIS_PORT = Integer.parseInt(properties.getProperty("bdis.port"));
