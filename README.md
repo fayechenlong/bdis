@@ -26,7 +26,7 @@
      未开始
 
 二、系统配置
-
+ 
     bdis.properties 是服务配置文件
     log4j.properties 是日志输出配置文件
     
@@ -36,15 +36,27 @@
  
  * bdis.model
  
-   bdis启动模式，bdis.model=single 单机代理模式  bdis.model=cluster 集群代理模式
+   bdis启动模式
+   
+   bdis.model=single  单机代理模式  
+   
+   bdis.model=cluster 集群代理模式
         
 * bdis.single.redis.host
    
-   如果配置单机代理模式，这个配置填写redis的单机地址；bdis.single.redis.port 填写端口号；bdis.single.redis.auth填写密码；
+   配置单机代理模式
+   
+   bdis.single.redis.host=redis地址
+   
+   bdis.single.redis.port=端口号
+   
+   bdis.single.redis.auth=密码
 
 * bdis.cluster.redis.hosts
 
-   如果配置的集群代理模式，这个配置填写redis集群地址；每个实例用逗号隔开；例如：172.16.250.91:7000,172.16.250.91:7001,172.16.250.91:7002,172.16.250.91:7003,172.16.250.91:7004,172.16.250.91:7005
+   如果配置的集群代理模式，这个配置填写redis集群地址，每个实例用逗号隔开。
+   
+   例如：bdis.cluster.redis.hosts=172.16.250.91:7000,172.16.250.91:7001,172.16.250.91:7002,172.16.250.91:7003,172.16.250.91:7004,172.16.250.91:7005
    
 三、启动方式
 
