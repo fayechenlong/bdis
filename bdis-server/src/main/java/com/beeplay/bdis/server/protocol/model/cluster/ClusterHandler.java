@@ -2,7 +2,7 @@ package com.beeplay.bdis.server.protocol.model.cluster;
 
 import com.beeplay.bdis.server.command.BdisCommand;
 import com.beeplay.bdis.server.config.StartConfig;
-import com.beeplay.bdis.server.BdisServerStart;
+import com.beeplay.bdis.server.BdisServerAbstract;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.redis.FullBulkStringRedisMessage;
 import io.netty.handler.codec.redis.FullBulkStringRedisMessage;
@@ -49,7 +49,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void get(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
         if(messages.size()>1) {
             String key = getMessage(messages,1);
-            super.returnData(BdisServerStart.jedisCluster.get(key), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.get(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -57,7 +57,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void type(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
         if(messages.size()>1) {
             String key = getMessage(messages,1);
-            super.returnData(BdisServerStart.jedisCluster.type(key), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.type(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -65,7 +65,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void ttl(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
         if(messages.size()>1) {
             String key = getMessage(messages,1);
-            super.returnData(BdisServerStart.jedisCluster.ttl(key), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.ttl(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -73,7 +73,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void del(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
         if(messages.size()>1) {
             String key = getMessage(messages,1);
-            super.returnData(BdisServerStart.jedisCluster.del(key), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.del(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -81,7 +81,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void scard(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
         if(messages.size()>1) {
             String key = getMessage(messages,1);
-            super.returnData(BdisServerStart.jedisCluster.scard(key), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.scard(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -89,7 +89,7 @@ public  class ClusterHandler extends ClusterAbstract {
     private void incr(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
         if(messages.size()>1) {
             String key = getMessage(messages,1);
-            super.returnData(BdisServerStart.jedisCluster.incr(key), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.incr(key), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -98,7 +98,7 @@ public  class ClusterHandler extends ClusterAbstract {
         if(messages.size()>1) {
             String key = getMessage(messages,1);
             Long outLong = 0L;
-            if (BdisServerStart.jedisCluster.exists(key)) {
+            if (BdisServerAbstract.jedisCluster.exists(key)) {
                 outLong = 1L;
             }
             super.returnData(outLong, ctx);
@@ -110,7 +110,7 @@ public  class ClusterHandler extends ClusterAbstract {
         if(messages.size()==3) {
             String key =  getMessage(messages,1);
             String value = getMessage(messages,2);
-            super.returnData(BdisServerStart.jedisCluster.set(key, value), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.set(key, value), ctx);
             return;
         }else if(messages.size()==5){
             String key = getMessage(messages,1);
@@ -118,7 +118,7 @@ public  class ClusterHandler extends ClusterAbstract {
             String command =getMessage(messages,3);
             if(command.toLowerCase().equals("ex")){
             Integer seconds = Integer.parseInt(getMessage(messages,4));
-            super.returnData(BdisServerStart.jedisCluster.setex(key,seconds,value), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.setex(key,seconds,value), ctx);
             }
             return;
         }
@@ -129,7 +129,7 @@ public  class ClusterHandler extends ClusterAbstract {
             String key = getMessage(messages,1);
             Integer seconds = Integer.parseInt(getMessage(messages,2));
             String value =  getMessage(messages,3);
-            super.returnData(BdisServerStart.jedisCluster.setex(key,seconds,value), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.setex(key,seconds,value), ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -152,7 +152,7 @@ public  class ClusterHandler extends ClusterAbstract {
                     sp.count(countValue);
                 }
             }
-            super.returnData(BdisServerStart.jedisCluster.scan(sursor,sp), ctx);
+            super.returnData(BdisServerAbstract.jedisCluster.scan(sursor,sp), ctx);
             return;
         }
         super.unknownCommand(ctx);
