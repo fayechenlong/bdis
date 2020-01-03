@@ -45,6 +45,5 @@ public class BdisSingleHandler extends ChannelDuplexHandler {
         logger.info("client connect;address:" + ctx.channel().remoteAddress()+" id:"+channelid);
         super.channelActive(ctx);
         BdisClientPool.bdisClients.put(channelid,ctx);
-        BdisServer.channelHandlerContext=ctx;
     }
 }
