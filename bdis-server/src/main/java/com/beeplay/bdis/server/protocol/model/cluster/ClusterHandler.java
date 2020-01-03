@@ -22,7 +22,7 @@ public  class ClusterHandler extends ClusterAbstract {
             super.unknownCommand(ctx);
             return;
         }
-        String command=messages.get(0).content().toString(CharsetUtil.UTF_8).toLowerCase();
+        String command=getMessage(messages,0).toLowerCase();
         Object obj=ClusterHandler.class.newInstance();
         if(cmdSize==1) {
             try {
@@ -136,7 +136,7 @@ public  class ClusterHandler extends ClusterAbstract {
     }
     private void scan(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
         if(messages.size()>1) {
-            String sursor = getMessage(messages,1);;
+            String sursor = getMessage(messages,1);
             ScanParams sp=new ScanParams();
             if(messages.size()>3) {
                 String match = getMessage(messages,2);
