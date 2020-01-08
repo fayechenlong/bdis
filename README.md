@@ -11,11 +11,11 @@
 
 * bdis主服务
     
-    （1）单例模式（完成）
+    （1）单例代理模式（完成）
     
-    （2）集群模式（未完成）
+    （2）集群代理模式（未完成）
     
-    （3）主从模式（未开始）
+    （3）独立模式（未完成）
     
 2. bdis-admin
 
@@ -41,6 +41,8 @@
    bdis.model=single  单机代理模式  
    
    bdis.model=cluster 集群代理模式
+   
+   bdis.model=bcache 独立运行模式  用自有bcache作为存储
         
 * bdis.single.redis.host
    

@@ -16,18 +16,28 @@ import java.util.Map;
  * @author chenlf
  * @date 2019/10/24
  */
-public class BdisSingleHandler extends ChannelDuplexHandler {
+public class BdisSingleHandler  extends ChannelDuplexHandler  {
     private static Logger logger = LoggerFactory.getLogger(BdisSingleHandler.class);
     private Map<Object,Object> stringMap = new HashMap<>();
+    private ChannelPool channelPool;
+    public BdisSingleHandler(){
+        init();
+    }
+    private void init(){
+        try {
+            this.channelPool=new ChannelPool();
+        }catch (Exception e){
+            logger.error("channelPool init failed!",e.getMessage());
+        }
+    }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
         RedisMessageUtil.printAggregatedRedisResponseCommand((RedisMessage)msg);
-
-        Connection connection= BdisServerStart.channelPool.getResource();
+        Connection connection= channelPool.getResource();
         connection.setChxId(ctx.channel().id().toString());
         connection.write(msg);
-        BdisServerStart.channelPool.returnResource(connection);
+        channelPool.returnResource(connection);
         //返回值
     }
     @Override

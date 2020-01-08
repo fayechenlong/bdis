@@ -1,5 +1,6 @@
 package com.beeplay.bdis.server.protocol.model.cluster;
 
+import com.beeplay.bdis.server.config.StartConfig;
 import com.beeplay.bdis.server.protocol.BdisClientPool;
 import com.beeplay.bdis.server.util.LogExceptionStackTrace;
 import com.beeplay.bdis.server.util.RedisMessageUtil;
@@ -8,9 +9,13 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.redis.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author chenlf
@@ -18,18 +23,32 @@ import java.util.List;
  */
 public class BdisClusterHandler extends ClusterHandler {
     private static Logger logger = LoggerFactory.getLogger(BdisClusterHandler.class);
+
+    public BdisClusterHandler(){
+        init();
+    }
+    private void init(){
+        try {
+            String [] clusterHosts= StartConfig.BDIS_CLUSTER_HOSTS.split(",");
+            Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
+            for(String hostAndPort:clusterHosts){
+                String[] hap=hostAndPort.split(":");
+                jedisClusterNodes.add(new HostAndPort(hap[0], Integer.parseInt(hap[1])));
+            }
+            jedisCluster = new JedisCluster(jedisClusterNodes);
+        }catch (Exception e){
+            logger.error("bdis started in jedisCluster model failed :",e.getMessage());
+        }
+
+    }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)  {
 
         RedisMessageUtil.printAggregatedRedisResponseCommand(((RedisMessage)msg));//日志打印
 
-        List<RedisMessage> messages=((ArrayRedisMessage)msg).children();
-        List<FullBulkStringRedisMessage> fullBulkStringRedisMessages=new ArrayList<>();
-        for(RedisMessage redisMessage:messages){
-            fullBulkStringRedisMessages.add((FullBulkStringRedisMessage)redisMessage);
-        }
+        List<FullBulkStringRedisMessage> fullBulkStringRedisMessages=RedisMessageUtil.coverMessage(msg);
         try {
-            super.sendCommand(ctx,fullBulkStringRedisMessages);
+            sendCommand(ctx,fullBulkStringRedisMessages);
         }catch (Exception e){
             logger.error(LogExceptionStackTrace.erroStackTrace(e).toString());
             ctx.writeAndFlush(new SimpleStringRedisMessage(e.getMessage()));

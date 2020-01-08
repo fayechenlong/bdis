@@ -2,29 +2,29 @@ package com.beeplay.bdis.server;
 
 
 import com.beeplay.bdis.server.config.StartConfig;
+import com.beeplay.bdis.server.protocol.model.bcache.BdisBcacheHandler;
 import com.beeplay.bdis.server.protocol.model.cluster.BdisClusterHandler;
+import com.beeplay.bdis.server.protocol.model.cluster.ClusterHandler;
 import com.beeplay.bdis.server.protocol.model.single.BdisSingleHandler;
 import com.beeplay.bdis.server.protocol.model.single.ChannelPool;
 import com.beeplay.bdis.server.protocol.model.single.Protocol;
 import com.beeplay.bdis.server.util.LogExceptionStackTrace;
+import com.beeplay.bdis.server.util.RedisMessageUtil;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.redis.RedisArrayAggregator;
-import io.netty.handler.codec.redis.RedisBulkStringAggregator;
-import io.netty.handler.codec.redis.RedisDecoder;
-import io.netty.handler.codec.redis.RedisEncoder;
+import io.netty.handler.codec.redis.*;
+import io.netty.util.CharsetUtil;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -32,8 +32,6 @@ public class BdisServerAbstract {
 
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(BdisServerAbstract.class);
     private static Integer port = StartConfig.BDIS_PORT;
-    public static ChannelPool channelPool;
-    public static JedisCluster jedisCluster;
     public static void loadConfig() {
         try {
             Properties properties = new Properties();
@@ -52,23 +50,6 @@ public class BdisServerAbstract {
         }
     }
     public  static void run() throws Exception {
-        //根据配置加载启动模式
-        if(StartConfig.BDIS_MODEL.equals("single")) {
-            channelPool = new ChannelPool();
-            logger.info("bdis is starting with single model");
-        }else if(StartConfig.BDIS_MODEL.equals("cluster")) {
-            String [] clusterHosts=StartConfig.BDIS_CLUSTER_HOSTS.split(",");
-            Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
-            for(String hostAndPort:clusterHosts){
-                String[] hap=hostAndPort.split(":");
-                jedisClusterNodes.add(new HostAndPort(hap[0], Integer.parseInt(hap[1])));
-            }
-            jedisCluster = new JedisCluster(jedisClusterNodes);
-            logger.info("bdis is starting with cluster model");
-        }else {
-            logger.info("bdis start failed! unkown start model!");
-            return;
-        }
         startServer();
     }
     private static void startServer(){
@@ -90,10 +71,22 @@ public class BdisServerAbstract {
                     if(StartConfig.BDIS_MODEL.equals("cluster")){
                         p.addLast(new BdisClusterHandler());
                     }
+                    if(StartConfig.BDIS_MODEL.equals("bcache")){
+                        p.addLast(new BdisBcacheHandler());
+                    }
                 }
             });
             serverBootstrap.channel(NioServerSocketChannel.class);
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
+            if(StartConfig.BDIS_MODEL.equals("single")) {
+                logger.info("bdis started in single model");
+            }
+            if(StartConfig.BDIS_MODEL.equals("cluster")){
+                logger.info("bdis started in jedisCluster model");
+            }
+            if(StartConfig.BDIS_MODEL.equals("bcache")){
+                logger.info("bdis started in bcache model");
+            }
             logger.info("bdis start success！port:" + port);
             channelFuture.channel().closeFuture().sync();
         } catch(Exception e){
@@ -103,4 +96,5 @@ public class BdisServerAbstract {
             group.shutdownGracefully();
         }
     }
+
 }

@@ -3,51 +3,41 @@ package com.beeplay.bdis.server.protocol.model.cluster;
 
 import com.beeplay.bdis.server.command.BdisCommand;
 import com.beeplay.bdis.server.util.GfJsonUtil;
+import com.beeplay.bdis.server.util.RedisMessageUtil;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.redis.FullBulkStringRedisMessage;
 import io.netty.handler.codec.redis.SimpleStringRedisMessage;
 import io.netty.util.CharsetUtil;
+import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.ScanResult;
 
 import java.util.List;
 
 public abstract class ClusterAbstract extends ChannelDuplexHandler {
 
+    public static JedisCluster jedisCluster;
+
     public void returnData(String out,ChannelHandlerContext ctx){
-        if(out!=null) {
-            ctx.writeAndFlush(new FullBulkStringRedisMessage(ByteBufUtil.writeUtf8(ctx.alloc(), out)));
-        }else {
-            ctx.writeAndFlush(new FullBulkStringRedisMessage(ByteBufUtil.writeUtf8(ctx.alloc(), BdisCommand.NULL.cmd())));
-        }
+        RedisMessageUtil.returnData(out,ctx);
     }
     public void returnData(ScanResult<String> sr, ChannelHandlerContext ctx){
-        ctx.writeAndFlush(new FullBulkStringRedisMessage(ByteBufUtil.writeUtf8(ctx.alloc(), sr.getCursor())));
-        if(sr.getResult().size()>0) {
-            ctx.writeAndFlush(new FullBulkStringRedisMessage(ByteBufUtil.writeUtf8(ctx.alloc(), GfJsonUtil.toJSONString(sr.getResult()))));
-        }else {
-            empty(ctx);
-        }
+        RedisMessageUtil.returnData(sr,ctx);
     }
     public void returnData(Long outLong,ChannelHandlerContext ctx){
-        if(outLong!=null) {
-            ctx.writeAndFlush(new FullBulkStringRedisMessage(ByteBufUtil.writeUtf8(ctx.alloc(), String.valueOf(outLong))));
-        }else {
-            ctx.writeAndFlush(new FullBulkStringRedisMessage(ByteBufUtil.writeUtf8(ctx.alloc(), BdisCommand.NULL.cmd())));
-        }
+        RedisMessageUtil.returnData(outLong,ctx);
     }
     public void unknownCommand(ChannelHandlerContext ctx){
-        ctx.writeAndFlush(new SimpleStringRedisMessage("ERR : need more parms!"));
+        RedisMessageUtil.unknownCommand(ctx);
     }
     public void empty(ChannelHandlerContext ctx){
-        ctx.writeAndFlush(new SimpleStringRedisMessage("(empty list or set)"));
+        RedisMessageUtil.empty(ctx);
     }
     public void unknownCommand(ChannelHandlerContext ctx,String command){
-        ctx.writeAndFlush(new SimpleStringRedisMessage("ERR unknown command '" + command + "'"));
+        RedisMessageUtil.unknownCommand(ctx,command);
     }
-
     public String getMessage(List<FullBulkStringRedisMessage> messages,int count){
-        return messages.get(count).content().toString(CharsetUtil.UTF_8);
+        return RedisMessageUtil.getMessage(messages,count);
     }
 }
