@@ -1,5 +1,6 @@
 package com.beeplay.bdis.server.bcache.base;
 
+import com.beeplay.bdis.server.config.StartConfig;
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.PersistentCacheManager;
@@ -16,8 +17,6 @@ import java.util.Set;
 
 public class BaseCacheAbstract {
 
-    private Long heapSize=100L;
-    private Long offheapSize=100L;
     private Long diskSize=1000L;
     private String cacheDiskPath="/data";
     private String childName="myData";
@@ -37,8 +36,8 @@ public class BaseCacheAbstract {
     }
     private  <K, V> CacheConfigurationBuilder<K, V> getConfiguration(Class<K> kType,Class<V> vType){
         return CacheConfigurationBuilder.newCacheConfigurationBuilder(kType,vType, ResourcePoolsBuilder.newResourcePoolsBuilder()
-                .heap(heapSize, EntryUnit.ENTRIES)
-                .offheap(offheapSize, MemoryUnit.MB));
+                .heap(StartConfig.heapSize, EntryUnit.ENTRIES)
+                .offheap(StartConfig.offheapSize, MemoryUnit.MB));
     }
     public Cache<String,String> createStringCache(String cacheName){
         Cache<String, String> myCache;

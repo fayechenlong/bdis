@@ -52,8 +52,6 @@
    
    bdis.single.redis.port=端口号
    
-   bdis.single.redis.auth=密码
-
 * bdis.cluster.redis.hosts
 
    如果配置的集群代理模式，这个配置填写redis集群地址，每个实例用逗号隔开。

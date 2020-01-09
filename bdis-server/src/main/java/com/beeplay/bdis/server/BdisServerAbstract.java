@@ -45,6 +45,10 @@ public class BdisServerAbstract {
             if (StartConfig.BDIS_MODEL.equals("cluster")) {
                 StartConfig.BDIS_CLUSTER_HOSTS = properties.getProperty("bdis.cluster.redis.hosts");
             }
+            if (StartConfig.BDIS_MODEL.equals("bcache")) {
+                StartConfig.heapSize =Long.getLong(properties.getProperty("bdis.bcache.heapSize"));
+                StartConfig.offheapSize = Long.getLong(properties.getProperty("bdis.bcache.offheapSize"));
+            }
         } catch (Exception e) {
             logger.error("config load error! ", LogExceptionStackTrace.erroStackTrace(e));
         }

@@ -9,4 +9,7 @@ public class StartConfig {
     public static String BDIS_MODEL="single";
     public static int BDIS_PORT=6789;
     public static String BDIS_CLUSTER_HOSTS="";
+
+    public static  Long heapSize=100L;
+    public static  Long offheapSize=100L;
 }
