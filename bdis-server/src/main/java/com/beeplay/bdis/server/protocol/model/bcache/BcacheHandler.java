@@ -58,4 +58,12 @@ public class BcacheHandler extends ChannelDuplexHandler {
         }
         RedisMessageUtil.unknownCommand(ctx);
     }
+    public void del(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
+        if(messages.size()>1) {
+            String key = getMessage(messages,1);
+            RedisMessageUtil.returnData(bcache.del(key), ctx);
+            return;
+        }
+        RedisMessageUtil.unknownCommand(ctx);
+    }
 }

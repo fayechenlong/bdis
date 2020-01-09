@@ -1,6 +1,7 @@
 package com.beeplay.bdis.server.protocol.model.cluster;
 
 
+import com.beeplay.bdis.server.bcache.Bcache;
 import com.beeplay.bdis.server.command.BdisCommand;
 import com.beeplay.bdis.server.util.GfJsonUtil;
 import com.beeplay.bdis.server.util.RedisMessageUtil;
@@ -10,6 +11,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.redis.FullBulkStringRedisMessage;
 import io.netty.handler.codec.redis.SimpleStringRedisMessage;
 import io.netty.util.CharsetUtil;
+import org.ehcache.Cache;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.ScanResult;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public abstract class ClusterAbstract extends ChannelDuplexHandler {
 
     public static JedisCluster jedisCluster;
+    public static Cache<String,String> localCache;
 
     public void returnData(String out,ChannelHandlerContext ctx){
         RedisMessageUtil.returnData(out,ctx);

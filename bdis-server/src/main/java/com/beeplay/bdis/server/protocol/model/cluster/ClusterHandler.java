@@ -51,7 +51,12 @@ public  class ClusterHandler extends ClusterAbstract {
     public void get(ChannelHandlerContext ctx,List<FullBulkStringRedisMessage> messages){
         if(messages.size()>1) {
             String key = RedisMessageUtil.getMessage(messages,1);
-            super.returnData(jedisCluster.get(key), ctx);
+            String value=localCache.get(key);
+            if(value==null){
+                value=jedisCluster.get(key);
+                localCache.put(key,value);
+            }
+            super.returnData(value, ctx);
             return;
         }
         super.unknownCommand(ctx);
@@ -112,6 +117,7 @@ public  class ClusterHandler extends ClusterAbstract {
         if(messages.size()==3) {
             String key =  getMessage(messages,1);
             String value = getMessage(messages,2);
+            localCache.remove(key);
             super.returnData(jedisCluster.set(key, value), ctx);
             return;
         }else if(messages.size()==5){
@@ -120,6 +126,7 @@ public  class ClusterHandler extends ClusterAbstract {
             String command =getMessage(messages,3);
             if(command.toLowerCase().equals("ex")){
             Integer seconds = Integer.parseInt(getMessage(messages,4));
+            localCache.remove(key);
             super.returnData(jedisCluster.setex(key,seconds,value), ctx);
             }
             return;
