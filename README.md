@@ -71,7 +71,7 @@
    
    *如果配置的集群代理模式，这个配置填写redis集群地址，每个实例用逗号隔开*
    
-   *例：
+   * 例：
    
          bdis.port=6789
          bdis.model=cluster
@@ -98,4 +98,4 @@
 
 * mvn clean install 打包后   
 
-  命令："java -jar bdis-server-1.0-SNAPSHOT-jar-with-dependencies.jar"  
+  命令：```"java -jar bdis-server-1.0-SNAPSHOT-jar-with-dependencies.jar"```  
