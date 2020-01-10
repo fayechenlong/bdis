@@ -8,7 +8,7 @@
 
 ## 一、系统模块
  
-###1. bdis-server
+### 1. bdis-server
 
 * bdis主服务
     
@@ -18,29 +18,29 @@
     
     （3）独立模式（未完成）
     
-###2. bdis-admin
+### 2. bdis-admin
 
 * bdis后台管理界面（未开始）
   
-###3. 高可用
+### 3. 高可用
 
   *未开始*
  
-###4. bcache
+### 4. bcache
 
   * bdis内部缓存模块，采用堆内内存+堆外内存+持久化混合存储，也用于代理模式的一级缓存，基于[ehcache3](http://www.ehcache.org)开发
 
-##二、系统配置
+## 二、系统配置
  
    * bdis.properties 是服务配置文件
 
    * log4j.properties 是日志输出配置文件
     
-###1.bdis服务端口号
+### 1.bdis服务端口号
   
    * bdis.port=6999  #端口号自定义
  
-###2.bdis启动模式
+### 2.bdis启动模式
  
    * bdis.model=single  #单机代理模式  
    
@@ -48,7 +48,7 @@
    
    * bdis.model=bcache #独立运行模式 ,用自有bcache作为存储
         
-###3.配置单机代理模式
+### 3.配置单机代理模式
    
    * bdis.model=single  #单机代理模式
    
@@ -63,7 +63,7 @@
          bdis.single.redis.host=172.16.249.72
          bdis.single.redis.port=6379
    
-###4.配置的集群代理模式
+### 4.配置的集群代理模式
 
    * bdis.model=cluster #集群代理模式
    
@@ -77,7 +77,7 @@
          bdis.model=cluster
          bdis.cluster.redis.hosts=172.16.250.91:7000,172.16.250.91:7001,172.16.250.91:7002,172.16.250.91:7003,172.16.250.91:7004,172.16.250.91:7005
           
-###5.配置独立运行模式
+### 5.配置独立运行模式
 
    * bdis.model=bcache #独立运行模式,用自有bcache作为存储
    
@@ -92,7 +92,7 @@
          bdis.bcache.heapSize=100
          bdis.bcache.offheapSize=100
    
-##三、启动方式
+## 三、启动方式
 
 * main函数在com.beeplay.bdis.server.BdisServerStart
 
