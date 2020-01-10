@@ -32,9 +32,9 @@
 
 ##二、系统配置
  
-   _bdis.properties 是服务配置文件_
+   * bdis.properties 是服务配置文件
 
-   ###log4j.properties 是日志输出配置文件
+   * log4j.properties 是日志输出配置文件
     
 ###1.bdis服务端口号
   
