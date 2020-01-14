@@ -15,31 +15,99 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <build>
-        <plugins>
-            <plugin>
+    <resources>
+        <!--指定src/main/resources资源要过滤-->
+        <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+        </resource>
+    </resources>
+    <plugins>
+        <!-- 可执行jar插件 -->
+        <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.5.5</version>
+            <artifactId>maven-jar-plugin</artifactId>
             <configuration>
+                <!--这些配置将写入到MANIFEST.MF文件中-->
                 <archive>
+                    <!--指定程序入口-->
                     <manifest>
+                        <addClasspath>true</addClasspath>
+                        <classpathPrefix>lib/</classpathPrefix>
                         <mainClass>com.beeplay.bdis.server.BdisServerStart</mainClass>
                     </manifest>
+                    <!-- (配置文件外置目录) -->
+                    <manifestEntries>
+                        <Class-Path>config/</Class-Path>
+                    </manifestEntries>
                 </archive>
-                <descriptorRefs>
-                    <descriptorRef>jar-with-dependencies</descriptorRef>
-                </descriptorRefs>
+                <excludes>
+                    <exclude>**/*.xml</exclude>
+                    <exclude>**/*.conf</exclude>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*/*.json</exclude>
+                </excludes>
             </configuration>
+        </plugin>
+        <!-- maven资源文件复制插件 -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.7</version>
             <executions>
                 <execution>
-                    <id>make-assembly</id>
+                    <id>copy-config</id>
                     <phase>package</phase>
                     <goals>
-                        <goal>single</goal>
+                        <goal>copy-resources</goal>
                     </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/config</outputDirectory>
+                        <resources>
+                            <resource>
+                                <directory>src/main/resources</directory>
+                                <includes>
+                                    <exclude>**/*.xml</exclude>
+                                    <exclude>**/*.conf</exclude>
+                                    <exclude>**/*.properties</exclude>
+                                </includes>
+                                <filtering>true</filtering>
+                            </resource>
+                        </resources>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
                 </execution>
             </executions>
-            </plugin>
-        </plugins>
+        </plugin>
+        <!-- 依赖包插件 -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        <!-- 是否不包含间接依赖 -->
+                        <excludeTransitive>false</excludeTransitive>
+                        <!-- 忽略版本 -->
+                        <stripVersion>false</stripVersion>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.18.1</version>
+            <configuration>
+                <skipTests>true</skipTests>
+            </configuration>
+        </plugin>
+    </plugins>
     </build>
 </project>

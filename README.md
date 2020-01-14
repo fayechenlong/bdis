@@ -98,4 +98,10 @@
 
 * mvn clean install 打包后   
 
-  命令：```"java -jar bdis-server-1.0-SNAPSHOT-jar-with-dependencies.jar"```  
+  * config 目录是配置文件路径
+  * lib 是依赖包路径
+  * bdis-server-1.0-SNAPSHOT.jar 是可执行java文件
+  
+   target 目录复制上面两个文件件和jar文件到同一目录
+
+   执行命令：```"java -jar bdis-server-1.0-SNAPSHOT.jar"```  
