@@ -96,7 +96,7 @@
 
 * main函数在com.beeplay.bdis.server.BdisServerStart
 
-* mvn clean install 打包后   
+* mvn clean install 打包后   target目录下
 
   * config 目录是配置文件路径
   * lib 是依赖包路径
