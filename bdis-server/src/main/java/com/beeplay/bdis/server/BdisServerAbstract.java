@@ -37,20 +37,26 @@ public class BdisServerAbstract {
             Properties properties = new Properties();
             InputStream in = BdisServerStart.class.getClassLoader().getResourceAsStream("bdis.properties");
             properties.load(in);
-            logger.info("config load success!");
             StartConfig.BDIS_PORT = Integer.parseInt(properties.getProperty("bdis.port"));
             StartConfig.BDIS_MODEL = properties.getProperty("bdis.model");
-            Protocol.DEFAULT_HOST = properties.getProperty("bdis.single.redis.host");
-            Protocol.DEFAULT_PORT = Integer.parseInt(properties.getProperty("bdis.single.redis.port"));
+            logger.info("bdis.model:{}",StartConfig.BDIS_MODEL);
+            if(StartConfig.BDIS_MODEL.equals("single")) {
+                Protocol.DEFAULT_HOST = properties.getProperty("bdis.single.redis.host");
+                Protocol.DEFAULT_PORT = Integer.parseInt(properties.getProperty("bdis.single.redis.port"));
+                logger.info("redis.host:{} redis.port:{}",Protocol.DEFAULT_PORT,Protocol.DEFAULT_PORT);
+            }
             if (StartConfig.BDIS_MODEL.equals("cluster")) {
                 StartConfig.BDIS_CLUSTER_HOSTS = properties.getProperty("bdis.cluster.redis.hosts");
+                logger.info("cluster.redis.hosts:{}",StartConfig.BDIS_CLUSTER_HOSTS);
             }
             if (StartConfig.BDIS_MODEL.equals("bcache")) {
-                StartConfig.heapSize =Long.getLong(properties.getProperty("bdis.bcache.heapSize"));
-                StartConfig.offheapSize = Long.getLong(properties.getProperty("bdis.bcache.offheapSize"));
+                StartConfig.heapSize =Long.valueOf(properties.getProperty("bdis.bcache.heapSize"));
+                StartConfig.offheapSize = Long.valueOf(properties.getProperty("bdis.bcache.offheapSize"));
+                logger.info("bcache memory: heapSize={}MB  offheapSize={}MB"+StartConfig.heapSize,StartConfig.offheapSize);
             }
+            logger.info("bdis config load success!");
         } catch (Exception e) {
-            logger.error("config load error! ", LogExceptionStackTrace.erroStackTrace(e));
+            logger.error("config load error! {}", e.getMessage());
         }
     }
     public  static void run() throws Exception {
@@ -83,18 +89,18 @@ public class BdisServerAbstract {
             serverBootstrap.channel(NioServerSocketChannel.class);
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
             if(StartConfig.BDIS_MODEL.equals("single")) {
-                logger.info("bdis started in single model");
+                logger.info("bdis started in single model !");
             }
             if(StartConfig.BDIS_MODEL.equals("cluster")){
-                logger.info("bdis started in jedisCluster model");
+                logger.info("bdis started in jedisCluster model !");
             }
             if(StartConfig.BDIS_MODEL.equals("bcache")){
-                logger.info("bdis started in bcache model");
+                logger.info("bdis started in bcache model !");
             }
-            logger.info("bdis start success！port:" + port);
+            logger.info("bdis start success！port:{}",port);
             channelFuture.channel().closeFuture().sync();
         } catch(Exception e){
-            logger.info("bdis start failed!");
+            logger.info("bdis start failed !");
             logger.info("error message:{}",e.getMessage());
         }finally {
             group.shutdownGracefully();

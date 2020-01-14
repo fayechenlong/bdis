@@ -38,6 +38,7 @@ public class BdisSingleHandler  extends ChannelDuplexHandler  {
         connection.setChxId(ctx.channel().id().toString());
         connection.write(msg);
         channelPool.returnResource(connection);
+        ctx.flush();
         //返回值
     }
     @Override
@@ -50,5 +51,10 @@ public class BdisSingleHandler  extends ChannelDuplexHandler  {
         logger.info("client connect;address:" + ctx.channel().remoteAddress()+" id:"+channelid);
         super.channelActive(ctx);
         BdisClientPool.bdisClients.put(channelid,ctx);
+    }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.warn("client connect close!;address:" + ctx.channel().remoteAddress());
+        ctx.close();
     }
 }

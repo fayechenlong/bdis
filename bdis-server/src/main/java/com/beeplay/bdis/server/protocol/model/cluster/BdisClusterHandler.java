@@ -68,6 +68,7 @@ public class BdisClusterHandler extends ClusterHandler {
             logger.error(LogExceptionStackTrace.erroStackTrace(e).toString());
             ctx.writeAndFlush(new SimpleStringRedisMessage(e.getMessage()));
         }
+        ctx.flush();
     }
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
@@ -79,5 +80,10 @@ public class BdisClusterHandler extends ClusterHandler {
         logger.info("client connect;address:" + ctx.channel().remoteAddress()+" id:"+channelid);
         super.channelActive(ctx);
         BdisClientPool.bdisClients.put(channelid,ctx);
+    }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.warn("client connect close!;address:" + ctx.channel().remoteAddress());
+        ctx.close();
     }
 }

@@ -49,13 +49,13 @@ public class RedisMessageUtil {
     }
     public static void printAggregatedRedisResponseReturn(RedisMessage msg) {
         if (msg instanceof SimpleStringRedisMessage) {
-            logger.info("return : "+((SimpleStringRedisMessage) msg).content());
+            logger.info("return : {}",((SimpleStringRedisMessage) msg).content());
         } else if (msg instanceof ErrorRedisMessage) {
-            logger.info("return : "+((ErrorRedisMessage) msg).content());
+            logger.info("return : {}",((ErrorRedisMessage) msg).content());
         } else if (msg instanceof IntegerRedisMessage) {
-            logger.info("return : "+String.valueOf(((IntegerRedisMessage) msg).value()));
+            logger.info("return : {}",String.valueOf(((IntegerRedisMessage) msg).value()));
         } else if (msg instanceof FullBulkStringRedisMessage) {
-            logger.info("return : "+getString((FullBulkStringRedisMessage) msg));
+            logger.info("return : {}",getString((FullBulkStringRedisMessage) msg));
         } else if (msg instanceof ArrayRedisMessage) {
             StringBuffer returnString=new StringBuffer("[");
             int a=0;
@@ -66,28 +66,28 @@ public class RedisMessageUtil {
                     break;
                 }
             }
-            logger.info("return : "+returnString.append(".....]"));
+            logger.info("return : {}",returnString.append(".....]"));
         } else {
             throw new CodecException("unknown message type: " + msg);
         }
     }
     public static void printAggregatedRedisResponseCommand(RedisMessage msg) {
         if (msg instanceof SimpleStringRedisMessage) {
-            logger.info("command : "+((SimpleStringRedisMessage) msg).content());
+            logger.info("command : {}",((SimpleStringRedisMessage) msg).content());
         } else if (msg instanceof ErrorRedisMessage) {
-            logger.info("command : "+((ErrorRedisMessage) msg).content());
+            logger.info("command : {}",((ErrorRedisMessage) msg).content());
         } else if (msg instanceof IntegerRedisMessage) {
-            logger.info("command : "+((IntegerRedisMessage) msg).toString());
+            logger.info("command : {}",((IntegerRedisMessage) msg).toString());
         } else if (msg instanceof FullBulkStringRedisMessage) {
-            logger.info("command : "+getString((FullBulkStringRedisMessage) msg));
+            logger.info("command : {}",getString((FullBulkStringRedisMessage) msg));
         } else if (msg instanceof ArrayRedisMessage) {
             String returnString="";
             for (RedisMessage child : ((ArrayRedisMessage) msg).children()) {
                 returnString=returnString+ RedisMessageUtil.printAggregatedRedisResponse(child)+" ";
             }
-            logger.info("command : "+returnString);
+            logger.info("command : {}",returnString);
         } else {
-            throw new CodecException("unknown message type: " + msg);
+            throw new CodecException("unknown message type: {}" + msg);
         }
     }
     public static void returnData(String out,ChannelHandlerContext ctx){
