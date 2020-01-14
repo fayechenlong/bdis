@@ -52,7 +52,7 @@ public class BdisServerAbstract {
             if (StartConfig.BDIS_MODEL.equals("bcache")) {
                 StartConfig.heapSize =Long.valueOf(properties.getProperty("bdis.bcache.heapSize"));
                 StartConfig.offheapSize = Long.valueOf(properties.getProperty("bdis.bcache.offheapSize"));
-                logger.info("bcache memory: heapSize={}MB  offheapSize={}MB"+StartConfig.heapSize,StartConfig.offheapSize);
+                logger.info("bcache memory: heapSize={}MB  offheapSize={}MB",StartConfig.heapSize,StartConfig.offheapSize);
             }
             logger.info("bdis config load success!");
         } catch (Exception e) {
